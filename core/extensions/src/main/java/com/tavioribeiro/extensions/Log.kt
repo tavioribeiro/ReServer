@@ -1,4 +1,4 @@
-package com.tavioribeiro.components
+package com.tavioribeiro.extensions
 
 import android.util.Log
 

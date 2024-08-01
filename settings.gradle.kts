@@ -22,3 +22,5 @@ dependencyResolutionManagement {
 rootProject.name = "ReServer"
 include(":app")
 include(":components")
+include(":core")
+include(":core:extensions")
