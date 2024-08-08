@@ -1,13 +1,27 @@
 package com.tavioribeiro.reserver
 
-import android.graphics.Color
+
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.tavioribeiro.extensions.log
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.tavioribeiro.reserver.databinding.ActivityMainBinding
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,15 +31,56 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        //setContentView(binding.root)
 
-        binding.textView.text = "Testando o Binding :)"
-        binding.textView.setTextColor(Color.parseColor("#00ff00"))
+        setContent {
+            MyScaffold()
+            //MainContainer()
+        }
+    }
 
-        /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }*/
+
+    @Composable
+    fun MainContainer() {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.LightGray),
+            contentAlignment = Alignment.Center
+        ) {
+            Greeting()
+        }
+    }
+
+
+
+    @Composable
+    fun Greeting() {
+        Text(
+            text = "Testando o Compose :)",
+            color = Color.Green,
+            fontSize = 20.sp,
+            modifier = Modifier
+                .fillMaxSize() // Preenche a tela
+                .wrapContentSize(Alignment.Center) // Centraliza o conteúdo
+        )
+    }
+
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun MyScaffold() {
+        Scaffold(
+            topBar = {
+                TopAppBar(title = { Text(text = "Meu App" ) })
+            },
+            bottomBar = {
+
+            }) { paddingValues ->
+            // Conteúdo principal do Scaffold, você pode adicionar outros componentes aqui
+            // paddingValues fornece as informações de padding para ajustar o conteúdo de acordo com os outros elementos do Scaffold
+            Text("Conteúdo Principal", modifier = Modifier.padding(paddingValues))
+        }
     }
 }

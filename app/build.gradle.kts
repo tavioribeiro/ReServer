@@ -21,7 +21,18 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
+        //https://developer.android.com/jetpack/androidx/releases/compose-kotlin?hl=pt-br
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
 
     buildTypes {
         release {
@@ -54,4 +65,17 @@ dependencies {
     implementation(project(":components"))
     implementation(project(":core"))
     implementation(project(":core:extensions"))
+
+
+    implementation("androidx.activity:activity-compose:1.9.1")
+    val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+
 }
