@@ -2,85 +2,110 @@ package com.tavioribeiro.reserver
 
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.tavioribeiro.reserver.databinding.ActivityMainBinding
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.tavioribeiro.components.navigation.MyAppNavigation
+import com.tavioribeiro.shared_resources.appearance.AppTheme
 
 
-
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        //setContentView(binding.root)
-
         setContent {
-            MyScaffold()
-            //MainContainer()
-        }
-    }
+            var isDarkTheme by remember { mutableStateOf(false) }
 
+            AppTheme(darkTheme = isDarkTheme) {
+                val systemUiController = rememberSystemUiController()
+                val colors = MaterialTheme.colorScheme
 
-    @Composable
-    fun MainContainer() {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray),
-            contentAlignment = Alignment.Center
-        ) {
-            Greeting()
-        }
-    }
+                //Defina a cor da barra de status aqui
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = colors.background,
+                        darkIcons = !isDarkTheme // Define se os ícones devem ser escuros ou claros
+                    )
+                }
 
-
-
-    @Composable
-    fun Greeting() {
-        Text(
-            text = "Testando o Compose :)",
-            color = Color.Green,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .fillMaxSize() // Preenche a tela
-                .wrapContentSize(Alignment.Center) // Centraliza o conteúdo
-        )
-    }
-
-
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun MyScaffold() {
-        Scaffold(
-            topBar = {
-                TopAppBar(title = { Text(text = "Meu App" ) })
-            },
-            bottomBar = {
-
-            }) { paddingValues ->
-            // Conteúdo principal do Scaffold, você pode adicionar outros componentes aqui
-            // paddingValues fornece as informações de padding para ajustar o conteúdo de acordo com os outros elementos do Scaffold
-            Text("Conteúdo Principal", modifier = Modifier.padding(paddingValues))
+                MyScaffold(onThemeToggle = { isDarkTheme = !isDarkTheme })
+            }
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyScaffold(onThemeToggle: () -> Unit) {
+    // Aplique o tema atual
+    val colors = MaterialTheme.colorScheme
+
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.background
+                ),
+                title = {
+                    Text(
+                        text = "ReServer",
+                        fontFamily = interSansFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.onBackground
+                    )
+                },
+            )
+        },
+        bottomBar = {
+            //MyAppNavigation()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(colors.primary)
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            Button(
+                onClick = onThemeToggle,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50.dp)) // Define o raio das bordas aqui
+                    .background(color = colors.primary)
+
+            ) {
+                Text(
+                    text = "Trocar Tema",
+                    color = colors.onPrimary,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
+
+val interSansFamily = FontFamily(
+    Font(com.tavioribeiro.shared_resources.R.font.inter_regular, FontWeight.Normal),
+    Font(com.tavioribeiro.shared_resources.R.font.inter_bold, FontWeight.Bold),
+    Font(com.tavioribeiro.shared_resources.R.font.inter_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(com.tavioribeiro.shared_resources.R.font.inter_medium, FontWeight.Medium)
+)
+
